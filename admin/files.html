@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件管理 - 管理后台</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/file.css">
+</head>
+<body>
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="bi bi-speedometer2"></i> 管理系统</h3>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="bi bi-house"></i> 控制面板</a></li>
+                <li><a href="news.html"><i class="bi bi-newspaper"></i> 新闻管理</a></li>
+                <li><a href="files.html" class="active"><i class="bi bi-folder"></i> 文件管理</a></li>
+                <li><a href="teachers.html"><i class="bi bi-people"></i> 青年委员会</a></li>
+                <li><a href="settings.html"><i class="bi bi-gear"></i> 系统设置</a></li>
+            </ul>
+        </div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <div class="top-navbar">
+                <button class="menu-toggle" id="menu-toggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                
+                <div class="user-info d-flex align-items-center">
+                    <img src="../assets/icon/admin.png" alt="管理员头像" class="me-2">
+                    <span id="admin-name" class="me-3">管理员</span>
+                    <button id="logout-btn" class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-box-arrow-right"></i> 退出登录
+                    </button>
+                </div>
+            </div>
+
+            <!-- 文件管理内容 -->
+            <div class="container-fluid">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="mb-0">文件管理</h1>
+                </div>
+            
+            <div class="file-manager" style="width: 100%; max-width: none;">
+                <!-- 上传区域 -->
+                <div class="upload-section">
+                    <h3>上传文件</h3>
+                    <div class="upload-area" id="uploadArea">
+                        <i class="file-icon">📁</i>
+                        <p>拖拽文件到此处或点击上传</p>
+                        <input type="file" id="fileInput" style="display: none">
+                    </div>
+                    
+                    <div class="file-form">
+                        <select id="fileCategory" class="form-control">
+                            <option value="">选择分类</option>
+                            <option value="document">文档资料</option>
+                            <option value="image">图片素材</option>
+                            <option value="video">视频资源</option>
+                            <option value="other">其他文件</option>
+                        </select>
+                        
+                        <textarea id="fileDescription" placeholder="文件描述（可选）" class="form-control"></textarea>
+                        
+                        <button type="button" class="btn btn-primary mt-3 w-100" id="uploadBtn">
+                            <i class="bi bi-cloud-upload"></i> 开始上传
+                        </button>
+                    </div>
+                    
+                    <div class="upload-progress" id="uploadProgress"></div>
+                </div>
+                
+                <!-- 文件列表区域 -->
+                <div class="files-section">
+                    <div class="file-search">
+                        <input type="text" id="searchFiles" placeholder="搜索文件...">
+                    </div>
+                    
+                    <div class="file-filters">
+                        <select id="categoryFilter">
+                            <option value="">所有分类</option>
+                            <option value="document">文档资料</option>
+                            <option value="image">图片素材</option>
+                            <option value="video">视频资源</option>
+                            <option value="other">其他文件</option>
+                        </select>
+                        
+                        <select id="sortFiles">
+                            <option value="date-desc">最新上传</option>
+                            <option value="date-asc">最早上传</option>
+                            <option value="name-asc">名称 A-Z</option>
+                            <option value="name-desc">名称 Z-A</option>
+                            <option value="size-desc">大小 ↓</option>
+                            <option value="size-asc">大小 ↑</option>
+                        </select>
+                    </div>
+                    
+                    <div class="file-list" id="fileList">
+                        <!-- 文件列表将通过 JavaScript 动态加载 -->
+                    </div>
+                    
+                    <div class="pagination" id="pagination">
+                        <!-- 分页控件将通过 JavaScript 动态加载 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- 退出确认对话框 -->
+    <div class="modal fade" id="logoutConfirmModal" tabindex="-1" aria-labelledby="logoutConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutConfirmModalLabel">退出确认</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>确定要退出系统吗？</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-danger" id="confirm-logout-btn">确认退出</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin-utils.js" type="module"></script>
+    <script src="js/file.js" type="module"></script>
+    <script>
+        // 非模块脚本，确保文件上传功能正常工作
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM fully loaded');
+            
+            // 直接绑定文件上传区域事件
+            setTimeout(function() {
+                const uploadArea = document.getElementById('uploadArea');
+                const fileInput = document.getElementById('fileInput');
+                const uploadBtn = document.getElementById('uploadBtn');
+                
+                console.log('Elements check:', {
+                    uploadArea: !!uploadArea,
+                    fileInput: !!fileInput,
+                    uploadBtn: !!uploadBtn
+                });
+                
+                if (uploadArea && fileInput) {
+                    uploadArea.onclick = function(e) {
+                        console.log('Upload area clicked directly');
+                        if (e.target === uploadArea || e.target.tagName === 'I' || e.target.tagName === 'P') {
+                            fileInput.click();
+                        }
+                    };
+                }
+                
+                if (fileInput) {
+                    fileInput.onchange = function() {
+                        console.log('File selected directly:', this.files[0]?.name);
+                        // 如果全局函数可用，则调用它
+                        if (window.handleFileSelection && this.files.length > 0) {
+                            window.handleFileSelection(this.files[0]);
+                        }
+                    };
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
